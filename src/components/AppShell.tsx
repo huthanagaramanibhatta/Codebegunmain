@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Menu, Heart, User, Sparkles, ShoppingBag } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import ConnectionStatus from '@/components/ConnectionStatus';
@@ -13,47 +13,19 @@ import { useCart } from '@/context/CartContext';
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const { wishlistCount } = useWishlist();
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user } = useAuth();
   const { totalItems, openCart } = useCart();
 
-  const isAuthPage = pathname === '/login' || pathname === '/register';
+  const isAuthPage = pathname === '/register';
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated && !isAuthPage) {
-      router.push('/login');
-    }
-  }, [loading, isAuthenticated, isAuthPage, router]);
-
-  // If on login or register, render auth screen without full sidebar
+  // If on register, render auth screen without full sidebar
   if (isAuthPage) {
     return (
       <div className="min-h-screen bg-[#06070d] text-slate-100 flex flex-col">
         {children}
       </div>
     );
-  }
-
-  // Loading state while checking authentication
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#06070d] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-purple-600 to-pink-500 p-0.5 animate-pulse shadow-lg shadow-violet-600/30">
-            <div className="w-full h-full bg-[#0b0c16] rounded-[14px] flex items-center justify-center">
-              <Sparkles size={20} className="text-violet-400" />
-            </div>
-          </div>
-          <span className="text-xs text-white/40 font-mono tracking-wider">AUTHENTICATING...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // If not authenticated on a protected page, wait for redirect
-  if (!isAuthenticated) {
-    return null;
   }
 
   return (

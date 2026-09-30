@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Store, Flame, Heart, Package, BarChart3, Settings, 
-  LogIn, LogOut, ChevronLeft, ChevronRight, X, Sparkles, 
+  LogOut, ChevronLeft, ChevronRight, X, Sparkles, 
   ShieldCheck, User, ExternalLink, Zap, ShoppingBag
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -240,18 +240,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
               </div>
             )}
           </div>
-        ) : (
-          <Link
-            href="/login"
-            onClick={onMobileClose}
-            className={`btn-luxury-primary w-full py-2.5 text-xs flex items-center justify-center gap-2 ${
-              collapsed ? 'px-0' : ''
-            }`}
-          >
-            <LogIn size={14} />
-            {!collapsed && <span>Sign In / Demo</span>}
-          </Link>
-        )}
+        ) : null}
 
         {/* Desktop Collapse Toggle Button */}
         <div className="hidden lg:flex items-center justify-end mt-2">
