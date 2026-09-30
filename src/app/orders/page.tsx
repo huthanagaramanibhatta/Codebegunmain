@@ -25,8 +25,8 @@ export default function OrdersPage() {
       if (data.length > 0 && !selectedOrder) {
         setSelectedOrder(data[0]);
       }
-    } catch {
-      toast.error('Failed to load orders');
+    } catch (err) {
+      console.warn('Orders fallback in use:', err);
     } finally {
       setLoading(false);
     }

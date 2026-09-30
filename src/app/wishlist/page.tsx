@@ -8,11 +8,13 @@ import { useWishlist } from '@/context/WishlistContext';
 import ProductCard from '@/components/ProductCard';
 import ProductDetailModal from '@/components/ProductDetailModal';
 import CheckoutModal from '@/components/CheckoutModal';
+import { useCart } from '@/context/CartContext';
 import type { Product } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function WishlistPage() {
   const { wishlist, toggleWishlist, wishlistCount } = useWishlist();
+  const { addToCart } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductDetail, setShowProductDetail] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
@@ -89,6 +91,10 @@ export default function WishlistPage() {
                 product={product}
                 onBuyNow={handleBuyNow}
                 onProductClick={handleProductClick}
+                onAddToCart={(p) => {
+                  addToCart(p, 1);
+                  toast.success(`Added ${p.name} to bag!`, { icon: '🛍️' });
+                }}
               />
             ))}
           </div>

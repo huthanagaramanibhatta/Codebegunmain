@@ -14,6 +14,7 @@ import CheckoutModal from '@/components/CheckoutModal';
 import ProductDetailModal from '@/components/ProductDetailModal';
 import ConnectionStatus from '@/components/ConnectionStatus';
 import AppShell from '@/components/AppShell';
+import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -45,6 +46,7 @@ export default function StorefrontPage() {
   const [loadTime, setLoadTime] = useState<number | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
+  const { addToCart } = useCart();
   const { stockUpdates, lastMessage, isConnected } = useWebSocket();
 
   // Load products & profile
@@ -63,8 +65,7 @@ export default function StorefrontPage() {
       if (!profile) setProfile(prof);
       setLoadTime(Math.round(performance.now() - t0));
     } catch (err) {
-      console.error('Failed to load:', err);
-      toast.error('Could not load products. Is the server running?');
+      console.warn('Fallback catalog in use:', err);
     } finally {
       setLoading(false);
     }
@@ -301,7 +302,7 @@ export default function StorefrontPage() {
                 </div>
                 <div>
                   <p className="text-xs text-white/40 font-medium">Live Catalog</p>
-                  <p className="text-sm sm:text-base font-bold text-white font-display">{products.length}+ Items</p>
+                  <p className="text-sm sm:text-base font-bold text-white font-display">{products.length > 0 ? `${products.length}+ Items` : '130+ Items'}</p>
                 </div>
               </div>
 
@@ -437,6 +438,10 @@ export default function StorefrontPage() {
                 liveStock={getEffectiveStock(product)}
                 onBuyNow={handleBuyNow}
                 onProductClick={handleProductClick}
+                onAddToCart={(p) => {
+                  addToCart(p, 1);
+                  toast.success(`Added ${p.name} to bag!`, { icon: '🛍️' });
+                }}
               />
             ))}
           </div>

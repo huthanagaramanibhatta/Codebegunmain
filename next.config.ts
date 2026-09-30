@@ -26,10 +26,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   allowedDevOrigins: ['192.168.62.169', 'localhost:3000'],
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://codebegunbackend-4.onrender.com';
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:4000/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },

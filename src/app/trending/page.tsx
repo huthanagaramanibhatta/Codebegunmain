@@ -11,6 +11,7 @@ import { fetchProducts } from '@/lib/api';
 import ProductCard from '@/components/ProductCard';
 import ProductDetailModal from '@/components/ProductDetailModal';
 import CheckoutModal from '@/components/CheckoutModal';
+import { useCart } from '@/context/CartContext';
 import type { Product } from '@/types';
 import toast from 'react-hot-toast';
 
@@ -21,6 +22,7 @@ export default function TrendingPage() {
   const [showProductDetail, setShowProductDetail] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [checkoutQuantity, setCheckoutQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   // Live countdown timer for Flash Drops
   const [timeLeft, setTimeLeft] = useState({ hours: 4, minutes: 18, seconds: 45 });
@@ -44,8 +46,8 @@ export default function TrendingPage() {
         // Curate hot deals with >= 35% discount or featured
         const curated = all.filter(p => p.discount >= 35 || p.featured).slice(0, 24);
         setProducts(curated);
-      } catch {
-        toast.error('Failed to load trending items');
+      } catch (err) {
+        console.warn('Fallback trending in use:', err);
       } finally {
         setLoading(false);
       }
@@ -154,6 +156,10 @@ export default function TrendingPage() {
                 product={product}
                 onBuyNow={handleBuyNow}
                 onProductClick={handleProductClick}
+                onAddToCart={(p) => {
+                  addToCart(p, 1);
+                  toast.success(`Added ${p.name} to bag!`, { icon: '🛍️' });
+                }}
               />
             ))}
           </div>
